@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--接口-->
+<mapper namespace="com.ljsy.dao.UserDao">
+
+    <select id="login" resultType="com.ljsy.entity.User">
+        select `id`,`name` from `user` where `name`=#{name} and `password`=#{password}
+    </select>
+
+
+    <!--id唯一, 不能方法重载, 操作， 返回的实体类，返回集合也应该是填集合元素的类型-->
+    <select id="findAll" resultType="com.ljsy.entity.User">
+        select 列名
+        from `user`
+    </select>
+
+    <!--插入参数, Statement->${}或PreparedStatement->(可以防sql注入)#{}-->
+    <select id="getEmpById" parameterType="int" resultType="com.ljsy.entity.User">
+        select 列名
+        from user
+        where id = #{id};
+    </select>
+
+
+    <!--插入时可以不传入id, 使用数据库自增(仅mysql适用)-->
+    <insert id="save" parameterType="com.ljsy.entity.User" useGeneratedKeys="true" keyProperty="id">
+        insert into user
+            value (#{id}, #{name})
+    </insert>
+
+
+    <update id="update">
+        <!--# 第一种update方法
+        # update user set `name` = #{} where id = #{id};
+        # 第二种update方法
+                update user-->
+        <!--        <set>-->
+        <!--            <if test="age!=null">-->
+        <!--                age=#{age}-->
+        <!--            </if>-->
+        <!--        </set>
+        三种update方法-->
+        update user
+        <!-- suffixOverrides去最后一个','号, suffix为后缀-->
+        <trim prefix="SET" suffixOverrides="," suffix="where id = #{id}">
+            <if test="">
+                `列名` = #{属性名},
+            </if>
+        </trim>
+    </update>
+
+    <update id="delete" parameterType="int">
+        delete
+        from user
+        where id = #{id}
+    </update>
+
+    <select id="count" resultType="int">
+        select count(1)
+        from user
+    </select>
+</mapper>

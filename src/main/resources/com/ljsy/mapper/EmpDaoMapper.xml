@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--接口-->
+<mapper namespace="com.ljsy.dao.EmpDao">
+    <!--id唯一, 不能方法重载, 操作， 返回的实体类，返回集合也应该是填集合元素的类型-->
+    <select id="findAll" resultType="Emp">
+        select *
+        from `emp`
+    </select>
+
+    <!--插入参数, Statement->${}或PreparedStatement->(可以防sql注入)#{}-->
+    <select id="findById" parameterType="int" resultType="Emp">
+        select `id`,`name`,age,`bir`
+        from emp
+        where id = #{id};
+    </select>
+
+
+    <!--插入时可以不传入id, 使用数据库自增(仅mysql适用)-->
+    <insert id="save" parameterType="Emp" useGeneratedKeys="true" keyProperty="id">
+        insert into emp (`name`,`age`,`bir`)
+        value (#{name}, #{age}, #{bir})
+    </insert>
+
+
+    <update id="update" parameterType="Emp">
+        update emp
+        <!-- suffixOverrides去最后一个','号, suffix为后缀-->
+        <trim prefix="SET" suffixOverrides="," suffix="where id = #{id}">
+            <if test="name!=null">
+                `name` = #{name},
+            </if>
+            <if test="age>0">
+                `age` = #{age},
+            </if>
+            <if test="bir!=null">
+                `bir` = #{bir},
+            </if>
+        </trim>
+    </update>
+
+    <update id="delete" parameterType="int">
+        delete from emp where id = #{id}
+    </update>
+
+    <select id="count" resultType="int">
+        select count(1) from emp
+    </select>
+</mapper>
